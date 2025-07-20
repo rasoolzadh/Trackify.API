@@ -1,0 +1,41 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Trackify.Views.AddTransactionPage"
+             xmlns:viewmodels="clr-namespace:Trackify.ViewModels"
+             x:DataType="viewmodels:AddTransactionViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+
+    <VerticalStackLayout Spacing="10" Padding="20">
+
+        <Frame Padding="0" CornerRadius="10" BorderColor="LightGray">
+            <Entry Placeholder="Amount" Keyboard="Numeric" Text="{Binding Amount}" Margin="10,0"/>
+        </Frame>
+
+        <Frame Padding="0" CornerRadius="10" BorderColor="LightGray">
+            <Entry Placeholder="Note" Text="{Binding Note}" Margin="10,0"/>
+        </Frame>
+
+        <Frame Padding="5" CornerRadius="10" BorderColor="LightGray">
+            <Picker Title="Select Type" 
+                    ItemsSource="{Binding TransactionTypes}"
+                    SelectedItem="{Binding SelectedTransactionType}"/>
+        </Frame>
+
+        <Frame Padding="5" CornerRadius="10" BorderColor="LightGray">
+            <Picker Title="Select Category"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}"/>
+        </Frame>
+
+        <Frame Padding="5" CornerRadius="10" BorderColor="LightGray">
+            <DatePicker Date="{Binding Date}" />
+        </Frame>
+
+        <Button Text="Save Transaction" 
+                Command="{Binding SaveTransactionCommand}"
+                Margin="0,20,0,0"
+                HeightRequest="50"
+                CornerRadius="25"/>
+    </VerticalStackLayout>
+</ContentPage>

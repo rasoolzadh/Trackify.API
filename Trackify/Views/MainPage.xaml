@@ -1,0 +1,94 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Trackify.Views.MainPage"
+             xmlns:viewmodels="clr-namespace:Trackify.ViewModels"
+             xmlns:models="clr-namespace:Trackify.Models"
+             
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             
+             xmlns:local="clr-namespace:Trackify.Views"
+
+             x:DataType="viewmodels:MainViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                                        EventName="Appearing"
+                                        Command="{Binding GetTransactionsCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="Auto, *" 
+          BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+          Padding="15">
+
+        <Frame Grid.Row="0" Margin="0,0,0,10" Padding="15" CornerRadius="15" BorderColor="LightGray" HasShadow="True">
+            <VerticalStackLayout>
+                <Label Text="Total Balance" FontSize="16" TextColor="Gray"/>
+                <Label Text="{Binding Balance, StringFormat='{0:C}'}" FontSize="36" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+                <Grid ColumnDefinitions="*, *" Margin="0,15,0,0">
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="Income" FontSize="14" TextColor="Gray"/>
+                        <Label Text="{Binding Income, StringFormat='{0:C}'}" TextColor="#2ECC71" FontSize="20" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                        <Label Text="Expense" FontSize="14" TextColor="Gray"/>
+                        <Label Text="{Binding Expense, StringFormat='{0:C}'}" TextColor="#E74C3C" FontSize="20" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+        </Frame>
+
+        <RefreshView Grid.Row="1" Command="{Binding GetTransactionsCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Transactions}"
+                            SelectionMode="None"
+                            EmptyView="No transactions found. Add one!">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete"
+                                               BackgroundColor="Red"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}"
+                                               CommandParameter="{Binding Id}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Frame Padding="10" Margin="0,5" CornerRadius="10" BorderColor="LightGray">
+                                <Grid ColumnDefinitions="Auto, *, Auto">
+                                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{Binding Type, Converter={StaticResource TypeToColorConverter}}" WidthRequest="50" HeightRequest="50">
+                                    </Frame>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Padding="10,0">
+                                        <Label Text="{Binding Note}" FontAttributes="Bold" />
+                                        <Label Text="{Binding Category}" FontSize="12" TextColor="Gray" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding Amount, StringFormat='{0:C}'}" FontAttributes="Bold" TextColor="{Binding Type, Converter={StaticResource TypeToTextColorConverter}}"/>
+                                        <Label Text="{Binding Date, StringFormat='{0:MMM dd}'}" FontSize="12" TextColor="Gray" HorizontalOptions="End"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="1"
+                Text="+"
+                FontSize="24"
+                FontAttributes="Bold"
+                CornerRadius="28"
+                HeightRequest="56"
+                WidthRequest="56"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,10,10"
+                Command="{Binding GoToAddTransactionPageCommand}"/>
+    </Grid>
+
+    <ContentPage.Resources>
+        <local:TypeToColorConverter x:Key="TypeToColorConverter" />
+        <local:TypeToTextColorConverter x:Key="TypeToTextColorConverter" />
+    </ContentPage.Resources>
+</ContentPage>

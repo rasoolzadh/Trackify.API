@@ -1,0 +1,28 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Trackify.Views.ChartsPage"
+             xmlns:viewmodels="clr-namespace:Trackify.ViewModels"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:DataType="viewmodels:ChartsViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                                        EventName="Appearing"
+                                        Command="{Binding LoadChartDataCommand}" />
+    </ContentPage.Behaviors>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="20">
+            <Label Text="Expense Breakdown by Category"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <microcharts:ChartView Chart="{Binding ExpenseChart}"
+                                   HeightRequest="400" />
+
+            <Button Text="Refresh Chart" Command="{Binding LoadChartDataCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
