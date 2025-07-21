@@ -1,6 +1,6 @@
-﻿// File: Trackify/Models/Transaction.cs
+﻿
 
-namespace Trackify.Models // ✅ This line is the fix.
+namespace Trackify.Models 
 {
     public class Transaction
     {

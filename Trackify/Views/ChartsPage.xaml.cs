@@ -1,4 +1,4 @@
-// File: Trackify/Views/ChartsPage.xaml.cs
+
 using Trackify.ViewModels;
 
 namespace Trackify.Views;

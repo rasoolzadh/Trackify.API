@@ -1,4 +1,4 @@
-// File: Trackify.API/Program.cs
+
 using Microsoft.EntityFrameworkCore;
 using Trackify.API.Data;
 using Trackify.API.Models;

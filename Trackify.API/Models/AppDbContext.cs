@@ -1,4 +1,4 @@
-﻿// File: Trackify.API/Data/AppDbContext.cs
+﻿
 using Microsoft.EntityFrameworkCore;
 using Trackify.API.Models;
 

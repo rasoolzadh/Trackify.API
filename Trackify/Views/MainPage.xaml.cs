@@ -1,8 +1,8 @@
-﻿// File: Trackify/Views/MainPage.xaml.cs
+﻿
 using System.Globalization;
 using Trackify.ViewModels;
 
-namespace Trackify.Views // ✅ This must be correct
+namespace Trackify.Views 
 {
     public partial class MainPage : ContentPage
     {

@@ -1,4 +1,4 @@
-﻿// File: Trackify/ViewModels/BaseViewModel.cs
+﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Trackify.ViewModels
@@ -10,7 +10,7 @@ namespace Trackify.ViewModels
         bool isBusy;
 
         [ObservableProperty]
-        string title = string.Empty; // Initialize here
+        string title = string.Empty;
 
         public bool IsNotBusy => !IsBusy;
     }

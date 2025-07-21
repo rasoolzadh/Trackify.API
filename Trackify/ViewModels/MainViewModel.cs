@@ -1,4 +1,4 @@
-﻿// File: Trackify/ViewModels/MainViewModel.cs
+﻿
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;

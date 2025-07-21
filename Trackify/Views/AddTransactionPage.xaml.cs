@@ -1,7 +1,7 @@
-// File: Trackify/Views/AddTransactionPage.xaml.cs
+
 using Trackify.ViewModels;
 
-namespace Trackify.Views // ✅ This must be correct
+namespace Trackify.Views 
 {
     public partial class AddTransactionPage : ContentPage
     {

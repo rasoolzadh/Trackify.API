@@ -4,6 +4,8 @@ using Trackify.Services;
 using Trackify.ViewModels;
 using Trackify.Views;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Trackify;
 
@@ -22,16 +24,36 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // ✅ THIS IS THE CORRECT URL CONFIGURATION
-        string baseApiUrl = DeviceInfo.Platform == DevicePlatform.Android
-                                ? "http://192.168.1.22:5138" // REPLACE with your PC's IP and the HTTP port
-                                : "http://localhost:5138";
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
 
-        // Use a more reliable handler
-        builder.Services.AddSingleton(new HttpClient(new SocketsHttpHandler()) { BaseAddress = new Uri(baseApiUrl) });
+        // Configure HttpClient
+        builder.Services.AddSingleton(sp =>
+        {
+            var handler = new HttpClientHandler();
+            var baseUrl = GetBaseApiUrl();
 
-        // Register Services, ViewModels, and Pages
+#if DEBUG
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                // Bypass SSL certificate validation in debug mode
+                handler.ServerCertificateCustomValidationCallback =
+                    (message, cert, chain, errors) => true;
+            }
+#endif
+
+            return new HttpClient(handler)
+            {
+                BaseAddress = new Uri(baseUrl),
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+        });
+
+        // Register Services
         builder.Services.AddSingleton<TransactionService>();
+
+        // Register ViewModels and Pages
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddTransient<AddTransactionViewModel>();
         builder.Services.AddSingleton<ChartsViewModel>();
@@ -40,5 +62,23 @@ public static class MauiProgram
         builder.Services.AddSingleton<ChartsPage>();
 
         return builder.Build();
+    }
+
+    private static string GetBaseApiUrl()
+    {
+        // For Android emulator
+        if (DeviceInfo.Platform == DevicePlatform.Android && Debugger.IsAttached)
+        {
+            return "http://10.0.2.2:5138";
+        }
+
+        // For physical Android device
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            return "http://192.168.1.39:5138";
+        }
+
+        // For Windows/Mac
+        return "http://localhost:5138";
     }
 }

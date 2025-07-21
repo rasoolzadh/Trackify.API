@@ -20,16 +20,27 @@ namespace Trackify.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync("/api/transactions");
-                if (response.IsSuccessStatusCode)
-                {
-                    return await response.Content.ReadFromJsonAsync<List<Transaction>>() ?? new List<Transaction>();
-                }
+                var response = await _httpClient.GetAsync("api/transactions");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<Transaction>>() ?? new List<Transaction>();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Debug.WriteLine($"HTTP Error: {httpEx.Message}");
+                await ShowAlert("Connection Error",
+                    $"Server returned an error: {httpEx.StatusCode?.ToString() ?? "Unknown"}");
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.WriteLine("Request timed out");
+                await ShowAlert("Timeout Error",
+                    "The request took too long. Please check your connection and try again.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error fetching transactions: {ex.Message}");
-                await Shell.Current.DisplayAlert("Connection Error", $"Could not connect to the server. Please check your connection and try again.\n\nDetails: {ex.Message}", "OK");
+                Debug.WriteLine($"General Error: {ex.Message}");
+                await ShowAlert("Error",
+                    $"An unexpected error occurred: {ex.Message}");
             }
             return new List<Transaction>();
         }
@@ -38,13 +49,15 @@ namespace Trackify.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/transactions", transaction);
-                return response.IsSuccessStatusCode;
+                var response = await _httpClient.PostAsJsonAsync("api/transactions", transaction);
+                response.EnsureSuccessStatusCode();
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error adding transaction: {ex.Message}");
-                await Shell.Current.DisplayAlert("Connection Error", $"Could not save the transaction. Please check your connection and try again.\n\nDetails: {ex.Message}", "OK");
+                await ShowAlert("Error",
+                    $"Failed to add transaction: {ex.Message}");
                 return false;
             }
         }
@@ -53,14 +66,31 @@ namespace Trackify.Services
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"/api/transactions/{id}");
-                return response.IsSuccessStatusCode;
+                var response = await _httpClient.DeleteAsync($"api/transactions/{id}");
+                response.EnsureSuccessStatusCode();
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error deleting transaction: {ex.Message}");
-                await Shell.Current.DisplayAlert("Connection Error", $"Could not delete the transaction. Please check your connection and try again.\n\nDetails: {ex.Message}", "OK");
+                await ShowAlert("Error",
+                    $"Failed to delete transaction: {ex.Message}");
                 return false;
+            }
+        }
+
+        private async Task ShowAlert(string title, string message)
+        {
+            try
+            {
+                if (Application.Current?.MainPage != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error showing alert: {ex.Message}");
             }
         }
     }

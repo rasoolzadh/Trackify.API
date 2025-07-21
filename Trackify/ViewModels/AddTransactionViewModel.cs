@@ -1,4 +1,4 @@
-﻿// File: Trackify/ViewModels/AddTransactionViewModel.cs
+﻿
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -53,7 +53,7 @@ namespace Trackify.ViewModels
                 Category = SelectedCategory
             };
 
-            // ✅ CORRECT: Call the service only once and capture the result.
+            
             var success = await _transactionService.AddTransactionAsync(newTransaction);
 
             if (success)

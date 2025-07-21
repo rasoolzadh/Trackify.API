@@ -1,4 +1,4 @@
-﻿// File: Trackify.API/Models/Transaction.cs
+﻿
 namespace Trackify.API.Models
 {
     public class Transaction
