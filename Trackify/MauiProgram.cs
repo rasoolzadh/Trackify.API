@@ -7,12 +7,17 @@ using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
+using System.Globalization;
+
 namespace Trackify;
 
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
+        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
+
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
